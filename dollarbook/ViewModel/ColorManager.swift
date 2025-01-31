@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 class ColorManager
 {
+    
     static func incomeColor()->UIColor
     {
         return UIColor(red: 145/255, green: 111/255, blue: 239/255, alpha: 1.0)
