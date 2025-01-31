@@ -6,6 +6,7 @@ ${BUILT_PRODUCTS_DIR}/FloatingTabBarController/FloatingTabBarController.framewor
 ${BUILT_PRODUCTS_DIR}/GLWalkthrough/GLWalkthrough.framework
 ${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework
 ${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework
+${BUILT_PRODUCTS_DIR}/KWVerificationCodeView/KWVerificationCodeView.framework
 ${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework
 ${BUILT_PRODUCTS_DIR}/MSBBarChart/MSBBarChart.framework
 ${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework
@@ -14,7 +15,9 @@ ${BUILT_PRODUCTS_DIR}/PrettyCards/PrettyCards.framework
 ${BUILT_PRODUCTS_DIR}/RandomColorSwift/RandomColorSwift.framework
 ${BUILT_PRODUCTS_DIR}/SOTabBar/SOTabBar.framework
 ${BUILT_PRODUCTS_DIR}/Spring/Spring.framework
+${BUILT_PRODUCTS_DIR}/SwiftEntryKit/SwiftEntryKit.framework
 ${BUILT_PRODUCTS_DIR}/SwiftValidators/SwiftValidators.framework
+${BUILT_PRODUCTS_DIR}/TagListView/TagListView.framework
 ${BUILT_PRODUCTS_DIR}/TaggerKit/TaggerKit.framework
 ${BUILT_PRODUCTS_DIR}/TagsList/TagsList.framework
 ${BUILT_PRODUCTS_DIR}/Toaster/Toaster.framework

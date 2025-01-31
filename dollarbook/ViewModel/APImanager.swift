@@ -188,4 +188,14 @@ class APImanager
         let url = "\(domain)getIcons"
         return url
     }
+    static func sendOtp()->String
+    {
+        let url = "\(domain)sendOTP"
+        return url
+    }
+    static func verifyOtp()->String
+    {
+        let url = "\(domain)verifyOTP"
+        return url
+    }
 }

@@ -325,12 +325,13 @@ class ReportViewModel:NSObject
                     {
                         self.TagArry.append(contentsOf: self.expnsTagArry)
                     }
-                    //self.getDfltTags(tags: tags)
-                    self.reprtDlgt?.loadTagsCln()
+                    self.getDfltTags(tags: tags)
+                   // self.reprtDlgt?.loadTagsCln()
                     
                 }
                 catch let err{
-                    self.reprtDlgt?.loadTagsCln()
+                    self.getDfltTags(tags: tags)
+                    //self.reprtDlgt?.loadTagsCln()
                     print(err)
                 }
             }
@@ -415,7 +416,7 @@ class ReportViewModel:NSObject
                     
                     self.incmTagsArry2 = self.incmTagsArry + self.incmTagsArry1
                     self.expTagsArry2 = self.expTagsArry + self.expTagsArry1
-                    self.reprtDlgt?.loadTagsCln()
+                    self.reprtDlgt?.loadTagsCln(incmTagAry: self.incmTagArry, expnsTagAry: self.expnsTagArry, incmTagIdAry: self.incmTagIdArry, expnsTagIdAry: self.expnsTagIdArry)
                     
                     //self.getTags(tags: tags)
                 }
@@ -503,7 +504,7 @@ extension ReportViewModel: UITableViewDataSource,UITableViewDelegate {
                 cell.crvdLbl.text =  "\(tagname.uppercased())"
                 cell.amount.textColor = ColorManager.incomeColor()
                 cell.percntgVal.text = "\(self.incmArry[indexPath.row].income_percentage!)%"
-                cell.percntg.backgroundColor = colors[indexPath.row]
+                cell.percntg.backgroundColor = UIColor(hex: self.incmArry[indexPath.row].iconColor!)
                 var totlngth = cell.percntgBg.frame.width
                 var fillLength = Int(totlngth)*(self.incmArry[indexPath.row].income_percentage!)/100
                 cell.percntgLength.constant = CGFloat(fillLength)
@@ -523,7 +524,7 @@ extension ReportViewModel: UITableViewDataSource,UITableViewDelegate {
                 var tagname = self.expArry[indexPath.row].tagName!.prefix(1)
                 cell.crvdLbl.text =  "\(tagname.uppercased())"
                 cell.amount.textColor = ColorManager.expenseColor()
-                cell.percntg.backgroundColor = colors[indexPath.row]
+                cell.percntg.backgroundColor = UIColor(hex: self.expArry[indexPath.row].iconColor!)
                 cell.percntgVal.text = "\(self.expArry[indexPath.row].expense_percentage!)%"
                 var totlngth = cell.percntgBg.frame.width
                 var fillLength = Int(totlngth)*(self.expArry[indexPath.row].expense_percentage!)/100

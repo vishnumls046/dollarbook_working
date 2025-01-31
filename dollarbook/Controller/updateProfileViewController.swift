@@ -74,8 +74,8 @@ class updateProfileViewController: UIViewController,profileProt,NVActivityIndica
     {
         self.nameTxt.text = val[0].fullName!
         self.emailTxt.text = val[0].emailId!
-        self.crncyTxt.text = val[0].currencyName!
-        self.crncyVal = val[0].currencyId!
+        //self.crncyTxt.text = val[0].currencyName!
+       // self.crncyVal = val[0].currencyId!
         //UserDefaults.standard.set(val[0].currencyCode, forKey: "crncyCode")
         self.stopAnimating()
     }

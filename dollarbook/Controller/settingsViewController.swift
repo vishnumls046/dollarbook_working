@@ -29,7 +29,7 @@ class settingsViewController: UIViewController,NVActivityIndicatorViewable,UICol
     @IBOutlet weak var crcnyCode:UILabel!
     @IBOutlet weak var crncyTxt:UITextField!
     @IBOutlet weak var acntFillTxt:UITextField!
-    @IBOutlet var crncyTblView : UIView!
+    @IBOutlet var crncyTblView,dltAcntBgView : UIView!
     var acntIdVal = ""
     @IBOutlet weak var crncyTbl:UITableView!
     @IBOutlet var slctTblTitle : UILabel!
@@ -55,6 +55,7 @@ class settingsViewController: UIViewController,NVActivityIndicatorViewable,UICol
     }
     var splashMdl = SplashViewModel()
     override func viewDidLoad() {
+        self.closeDltActView()
         self.splashMdl.settingsProt = self
         self.splashMdl.userCheck(from: "settings")
         self.configurePageControl()
@@ -114,6 +115,12 @@ class settingsViewController: UIViewController,NVActivityIndicatorViewable,UICol
 //        Timer.scheduledTimer(timeInterval: 0.7, target: self, selector: #selector(self.alarmAlertActivate), userInfo: nil, repeats: true)
         
         //self.prpLbl.fadeIn()
+    }
+
+    @IBAction func closeDltActView()
+    {
+        self.dltAcntBgView.isHidden  = true
+        
     }
     @IBAction func showTut()
     {
@@ -194,10 +201,10 @@ class settingsViewController: UIViewController,NVActivityIndicatorViewable,UICol
     {
         self.settngsViewMdl.logout()
     }
-    @IBAction func clkDeltUserAcnt()
+    @IBAction func deleteUserAlert()
     {
         let alert = UIAlertController(title: "", message: "", preferredStyle: UIAlertController.Style.alert)
-        let attributedString = NSAttributedString(string: "Dollar Book \n Are you sure you want to delete your whole account ? You will loose all the added transactions and data.", attributes: [
+        let attributedString = NSAttributedString(string: "Still sure you want to delete your whole account ? We are sorry to lose you!", attributes: [
                 NSAttributedString.Key.font : UIFont.systemFont(ofSize: 18), //your font here
                 NSAttributedString.Key.foregroundColor : UIColor.white
             ])
@@ -206,7 +213,7 @@ class settingsViewController: UIViewController,NVActivityIndicatorViewable,UICol
             //Accessing alert view backgroundColor :
             alert.view.subviews.first?.subviews.first?.subviews.first?.backgroundColor = UIColor.black
             alert.setValue(attributedString, forKey: "attributedTitle")
-        alert.view.subviews.first?.subviews.first?.subviews.first?.backgroundColor = ColorManager.expenseColor()
+        alert.view.subviews.first?.subviews.first?.subviews.first?.backgroundColor = ColorManager.incomeColor()
         
             // Accessing buttons tintcolor :
             alert.view.tintColor = UIColor.white
@@ -216,7 +223,11 @@ class settingsViewController: UIViewController,NVActivityIndicatorViewable,UICol
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
                 // show the alert
                 self.present(alert, animated: true, completion: nil)
+    }
+    @IBAction func clkDeltUserAcnt()
+    {
         
+        self.dltAcntBgView.isHidden = false
     }
     @IBAction func delAcntConf()
     {

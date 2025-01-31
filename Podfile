@@ -26,6 +26,9 @@ target 'dollarbook' do
   pod 'OneSignalXCFramework', '>= 3.0.0', '< 4.0'
   pod 'PieCharts'
   pod 'RandomColorSwift'
+  pod 'TagListView'
+  pod 'KWVerificationCodeView'
+  pod 'SwiftEntryKit'
 end
 
 target 'OneSignalNotificationServiceExtension' do

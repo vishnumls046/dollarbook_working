@@ -44,6 +44,23 @@ class landingViewController: UIViewController,UIScrollViewDelegate {
             self.tutView.isHidden = false
         }
     }
+    @IBAction func takeTour()
+    {
+        for i in stride(from: 0, to: 5, by: 1) {
+            var imgview:UIImageView  = UIImageView()
+            imgview.frame = CGRectMake(CGFloat(i)*self.view.frame.size.width, 0, self.view.frame.size.width, self.view.frame.size.height)
+            imgview.image = UIImage(named: "tut\(i).png")
+            //imgview.contentMode = .scaleAspectFill
+            self.tutScroll.addSubview(imgview)
+            let contentRect: CGRect = self.tutScroll.subviews.reduce(into: .zero) { rect, view in
+                rect = rect.union(imgview.frame)
+            }
+            self.tutScroll.contentSize = contentRect.size
+            
+        }
+        self.configurePageControl()
+        self.tutView.isHidden = false
+    }
     func configurePageControl() {
          self.pageControl.numberOfPages = 5
          self.pageControl.currentPage = 0

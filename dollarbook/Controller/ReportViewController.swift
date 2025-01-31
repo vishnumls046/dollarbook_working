@@ -11,13 +11,14 @@ import Fastis
 import NVActivityIndicatorView
 import Toaster
 import PieCharts
+import TagListView
 protocol reportsUIUpdt
 {
     func reprtStatUpdt(val:dashStatModel)
     func chartUpdt(incmArry:[IncomeTags],expArry:[ExpenseTags])
     func graphValUpdt(IncVals:Double,ExpVals:Double )
     func recentTblUpdt(trnsCnt:String)
-    func loadTagsCln()
+    func loadTagsCln(incmTagAry:[String],expnsTagAry:[String],incmTagIdAry:[String],expnsTagIdAry:[String])
     func slctTagId(val:[String])
     func updtAcntTbl()
     func editRedrct()
@@ -26,7 +27,7 @@ protocol reportsUIUpdt
     func closeSpin()
     func slctTbl()
 }
-class ReportViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate, UIGestureRecognizerDelegate,reportsUIUpdt,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,NVActivityIndicatorViewable,PieChartDelegate {
+class ReportViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,UIScrollViewDelegate, UIGestureRecognizerDelegate,reportsUIUpdt,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,NVActivityIndicatorViewable,PieChartDelegate, TagListViewDelegate {
     
     func chartUpdt(incmArry:[IncomeTags],expArry:[ExpenseTags])
     {
@@ -41,7 +42,7 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
                 self.models = []
                 for index in incmArry.indices {
                     //print("\(index): \(incmArry[index])")
-                    self.models.append(PieSliceModel(value: Double(incmArry[index].income_percentage!), color: colors[index]))
+                    self.models.append(PieSliceModel(value: Double(incmArry[index].income_percentage!), color: UIColor(hex: incmArry[index].iconColor!)))
                 }
                 chartView.layers = [createPlainTextLayer()]
                 chartView.models = self.models
@@ -65,7 +66,7 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
                 self.models = []
                 for index in expArry.indices {
                     
-                    self.models.append(PieSliceModel(value: Double(expArry[index].expense_percentage!), color: colors[index]))
+                    self.models.append(PieSliceModel(value: Double(expArry[index].expense_percentage!), color: UIColor(hex: expArry[index].iconColor!)))
                 }
                 chartView.layers = [createPlainTextLayer()]
                 chartView.models = self.models
@@ -87,8 +88,15 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
         self.recentsTblView.isHidden = true
         self.stopAnimating()
     }
-    func loadTagsCln() {
-        self.tagsClnView.reloadData()
+    func loadTagsCln(incmTagAry:[String],expnsTagAry:[String],incmTagIdAry:[String],expnsTagIdAry:[String]) {
+        
+        self.incmTagAryVal = incmTagAry
+        self.expnsTagAryVal = expnsTagAry
+        
+        self.incmTagIdAryVal = incmTagIdAry
+        self.expnsTagIdAryVal = expnsTagIdAry
+        
+        //self.tagsClnView.reloadData()
         self.stopAnimating()
     }
     func slctTagId(val:[String]) {
@@ -107,10 +115,28 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
         //self.totBalance.text = "\(crcyCode) \(val.current_balance!)"
         let incmFloat: Float = (val.total_income! as NSString).floatValue
         let incm = String(format: "%.f", incmFloat)
-        self.totIncLbl.text = "\(crcyCode) \(incm)"
+        
         let expFloat: Float = (val.total_expense! as NSString).floatValue
         let expns = String(format: "%.f", expFloat)
-        self.totExpLbl.text = "\(crcyCode) \(expns)"
+        if(self.incmOrExp == "1")
+        {
+            self.incmExpnLgndLbl.text = "Income"
+            self.incmExpnLgndLbl.textColor = ColorManager.incomeColor()
+            self.totIncLbl.text = "\(crcyCode)\(incm)"
+            self.totIncLbl.textColor = ColorManager.incomeColor()
+            self.crvView.borderWidth = 1
+            self.crvView.borderColor = ColorManager.incomeColor()
+        }
+        else if(self.incmOrExp == "2")
+        {
+            self.incmExpnLgndLbl.text = "Expense"
+            self.totIncLbl.text = "\(crcyCode)\(expns)"
+            self.incmExpnLgndLbl.textColor = ColorManager.expenseColor()
+            self.totIncLbl.textColor = ColorManager.expenseColor()
+            self.crvView.borderWidth = 1
+            self.crvView.borderColor = ColorManager.expenseColor()
+        }
+
         
     }
     func recentTblUpdt(trnsCnt:String) {
@@ -221,7 +247,6 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     @IBOutlet weak var tagsView:UIView!
     @IBOutlet weak var filterFrame:UIView!
     @IBOutlet weak var clndrFrame:UIView!
-    @IBOutlet weak var ddlBtn:UIButton!
     @IBOutlet weak var filterBtn:UIButton!
     @IBOutlet weak var addfilterBtn:UIButton!
     @IBOutlet weak var recentsTblView:UITableView!
@@ -229,14 +254,10 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     @IBOutlet weak var acntsTblView:UITableView!
     @IBOutlet weak var grphlLoadView,CategoryGridView:UIView!
     @IBOutlet weak var crvView:UIView!
-    @IBOutlet weak var incmBubble:UILabel!
-    @IBOutlet weak var expnseBubble:UILabel!
     @IBOutlet weak var noTrnscnLbl:UILabel!
-    @IBOutlet weak var acntClkBtn:UIButton!
     @IBOutlet weak var totBalance:UILabel!
-    @IBOutlet weak var totIncLbl:UILabel!
+    @IBOutlet weak var totIncLbl,incmExpnLgndLbl:UILabel!
     @IBOutlet weak var totExpLbl,ctgryBgBlckLbl:UILabel!
-    @IBOutlet weak var acntDispLbl:UILabel!
     @IBOutlet weak var dateRangeLbl:UILabel!
     @IBOutlet weak var incmCntnrLine:UILabel!
     @IBOutlet weak var expCntnrLine:UILabel!
@@ -244,9 +265,21 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     @IBOutlet weak var expBtn:UIButton!
     @IBOutlet weak var slctdTagLbl:UILabel!
     @IBOutlet weak var chartView: PieChart!
+    @IBOutlet weak var tagsList: TagListView!
+    @IBOutlet weak var acntsList: TagListView!
     @IBOutlet weak var noChartCnstrnt,ctgryVieBtmCnstrt: NSLayoutConstraint!
     //@IBOutlet weak var topLablBg:UILabel!
     var models:[PieSliceModel] = []
+    var incmTagAryVal:[String] = []
+    var expnsTagAryVal:[String] = []
+    var incmTagIdAryVal:[String] = []
+    var expnsTagIdAryVal:[String] = []
+    
+    var slctdTagIds:[String] = []
+    var acntIdAry:[String] = []
+    var acntNmeAry:[String] = []
+    var tagfull = false
+    var i = 0
     var tags = ""
     var dateFilter = ""
     var frmDate = ""
@@ -297,12 +330,13 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
                 self.present(alert, animated: true, completion: nil)
     }
     override func viewDidLoad() {
-        
+        DispatchQueue.global().async {
+            self.reprtViewModel.getAcnts()
+        }
         
         self.ctgryBgBlckLbl.isHidden = true
-        self.ctgryVieBtmCnstrt.constant = -565
+        self.ctgryVieBtmCnstrt.constant = -610
         self.chartView.delegate = self
-        self.ddlBtn.backgroundColor = ColorManager.incomeColorTblIcn()
         self.dateRangeLbl.textColor = ColorManager.incomeColor()
     
         self.dateFilter == "daterange"
@@ -333,23 +367,14 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
         self.acntId = ""
         
         self.acntName = "All Accounts"
-        self.acntDispLbl.text = self.acntName
         self.acntView.isHidden = true
         self.tagsClnView.allowsMultipleSelection = true
 //        self.tagsClnView.isUserInteractionEnabled = true
         self.clndrFrame.isHidden = true
         self.filterFrame.isHidden = true
-        self.incmBubble.cornerRadius = self.incmBubble.frame.height/2
-        self.expnseBubble.cornerRadius = self.expnseBubble.frame.height/2
-        self.ddlBtn.cornerRadius = 9
-        self.ddlBtn.borderColor = UIColor(red: 186/255, green: 178/255, blue: 210/255, alpha: 1.0)
-        self.ddlBtn.borderWidth = 1
         self.filterBtn.cornerRadius = 9
         self.filterBtn.borderColor = UIColor(red: 186/255, green: 178/255, blue: 210/255, alpha: 1.0)
         self.filterBtn.borderWidth = 1
-        self.acntClkBtn.cornerRadius = 9
-        self.acntClkBtn.borderColor = UIColor(red: 186/255, green: 178/255, blue: 210/255, alpha: 1.0)
-        self.acntClkBtn.borderWidth = 1
         
         reprtViewModel.reprtDlgt = self
         recentsTblView.dataSource = reprtViewModel
@@ -386,22 +411,100 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
             
        }
     }
-    @IBAction func clickCategory()
+    @IBAction func clickFilterView()
     {
         
-//        UIView.animate(withDuration: 0.5, animations: {
-//            // Change the top constraint to bring the view into the visible area
-//            self.CategoryGridView.transform = CGAffineTransform(translationX: 0, y: 0-self.CategoryGridView.frame.height)
-//            //self.ctgryVieBtmCnstrt.constant = 0
-//        })
-        self.view.endEditing(true)
+        self.tagsList.textFont = .systemFont(ofSize: 14)
+        self.acntsList.textFont = .systemFont(ofSize: 14)
         
+//        var size = 0
+//        if(ReportViewModel.acntsMdlArry.count > 6)
+//        {
+//            size = 6
+//        }
+//        else
+//        {
+//            size = self.incmTagAryVal.count
+//        }
+        self.acntsList.removeAllTags()
+        for i in 0..<ReportViewModel.acntsMdlArry.count
+        {
+            
+                var vals = ReportViewModel.acntsMdlArry[i]
+            if(self.acntId == vals.account_id)
+            {
+                let acntVw = self.acntsList.addTag(vals.account_name!)
+                acntVw.isSelected = true
+            }
+            else
+            {
+                self.acntsList.addTag(vals.account_name!)
+            }
+            
+        }
+        
+        //fill tags
+        self.tagsList.removeAllTags()
+
+        
+        if(self.incmOrExp == "1")
+        {
+//            var size = 0
+//            if(self.incmTagAryVal.count > 6)
+//            {
+//                size = 6
+//            }
+//            else
+//            {
+//                size = self.incmTagAryVal.count
+//            }
+            self.tagsList.removeAllTags()
+            for i in 0..<self.incmTagAryVal.count
+            {
+                if(self.slctdTagIds.contains(self.incmTagIdAryVal[i]))
+                {
+                   let tagVw = self.tagsList.addTag(self.incmTagAryVal[i])
+                    tagVw.isSelected = true
+                }
+                else
+                {
+                    self.tagsList.addTag(self.incmTagAryVal[i])
+                }
+            }
+        }
+        else
+        {
+//            var size = 0
+//            if(self.expnsTagAryVal.count > 6)
+//            {
+//                size = 6
+//            }
+//            else
+//            {
+//                size = self.expnsTagAryVal.count
+//            }
+            self.tagsList.removeAllTags()
+            for i in 0..<self.expnsTagAryVal.count
+            {
+                if(self.slctdTagIds.contains(self.expnsTagIdAryVal[i]))
+                {
+                   let tagVw = self.tagsList.addTag(self.expnsTagAryVal[i])
+                    tagVw.isSelected = true
+                }
+                else
+                {
+                    self.tagsList.addTag(self.expnsTagAryVal[i])
+                }
+            }
+           
+        }
+        self.view.endEditing(true)
         // Curve only the top corners
         self.CategoryGridView.layer.cornerRadius = 30 // Adjust the radius as needed
         self.CategoryGridView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner] // Top-left and top-right corners
         self.CategoryGridView.layer.masksToBounds = true
-        self.ctgryVieBtmCnstrt.constant = -60
-        self.tagsClnView.reloadData()
+        self.ctgryVieBtmCnstrt.constant = 0
+        //self.tagsClnView.reloadData()
         UIView.animate(withDuration: 0.7, animations: {
             self.ctgryBgBlckLbl.isHidden = false
                     self.view.layoutIfNeeded()
@@ -409,6 +512,148 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
                     print("Animation complete")
                     
                 })
+    }
+    @IBAction func fulltags()
+    {
+        if(self.incmOrExp == "1")
+        {
+            var size = 0
+            if(self.tagfull)
+            {
+                if(self.incmTagAryVal.count > 6)
+                {
+                    size = 6
+                }
+                else
+                {
+                    size = self.incmTagAryVal.count
+                }
+                self.tagsList.removeAllTags()
+                for i in 0..<size
+                {
+                    self.tagsList.addTag(self.incmTagAryVal[i])
+                }
+                self.tagfull = false
+            }
+            else
+            {
+                self.tagsList.removeAllTags()
+                for i in 0..<self.incmTagAryVal.count
+                {
+                    self.tagsList.addTag(self.incmTagAryVal[i])
+                }
+                self.tagfull = true
+            }
+        }
+        else
+        {
+            
+//            var size = 0
+//            if(self.tagfull)
+//            {
+//                if(self.expnsTagAryVal.count > 6)
+//                {
+//                    size = 6
+//                }
+//                else
+//                {
+//                    size = self.expnsTagAryVal.count
+//                }
+//                self.tagsList.removeAllTags()
+//                for i in 0..<self.expnsTagAryVal.count
+//                {
+//                    self.tagsList.addTag(self.expnsTagAryVal[i])
+//                }
+//                self.tagfull = false
+//            }
+//            else
+//            {
+//                self.tagsList.removeAllTags()
+//                for i in 0..<self.expnsTagAryVal.count
+//                {
+//                    self.tagsList.addTag(self.expnsTagAryVal[i])
+//                }
+//                self.tagfull = true
+//            }
+        }
+    }
+    func tagPressed(_ title: String, tagView: TagView, sender: TagListView) {
+        
+        if(sender.tag == 1)      // Click is from  tags list
+        {
+            if(self.incmOrExp == "1")
+            {
+                
+                //print("Tag pressed: \(title), \(sender)")
+                tagView.isSelected = !tagView.isSelected
+                if let index = self.incmTagAryVal.firstIndex(of: title) {
+                    var slctdTagId  = self.incmTagIdAryVal[index]
+                    toggleValue(in: &self.slctdTagIds, value: slctdTagId)
+                    
+                    self.tags = self.slctdTagIds.joined(separator: ",")
+                    print(self.tags)
+                    
+                } else {
+                    print("Value not found in the array")
+                }
+                print(self.slctdTagIds)
+            }
+            else
+            {
+                
+                tagView.isSelected = !tagView.isSelected
+                if let index = self.expnsTagAryVal.firstIndex(of: title) {
+                    var slctdTagId  = self.expnsTagIdAryVal[index]
+                    toggleValue(in: &self.slctdTagIds, value: slctdTagId)
+                    
+                    self.tags = self.slctdTagIds.joined(separator: ",")
+                    print(self.tags)
+                    
+                } else {
+                    print("Value not found in the array")
+                }
+                print(self.slctdTagIds)
+            }
+            self.reprtViewModel.getReports(fromDate:self.frmDate , toDate:self.toDate ,dateFilter:self.dateFilter, tags: self.tags,acntId:self.acntId, type: self.incmOrExp)
+            self.reprtViewModel.getDashStat(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter,tag_id:self.tags,account_id:self.acntId)
+        }
+        
+        
+        else if(sender.tag == 2) // Click is from  Acnts list
+        {
+            sender.tagViews.forEach {$0.isSelected = false}
+            tagView.isSelected = !tagView.isSelected
+            
+            for acntDet in ReportViewModel.acntsMdlArry as Array {
+                
+                self.acntNmeAry.append(acntDet.account_name!)
+                self.acntIdAry.append(acntDet.account_id!)
+           }
+            if let index = self.acntNmeAry.firstIndex(of: title) {
+                self.acntId  = self.acntIdAry[index]
+
+                
+            } else {
+                print("Value not found in the array")
+            }
+            self.reprtViewModel.getReports(fromDate:self.frmDate , toDate:self.toDate ,dateFilter:self.dateFilter, tags: self.tags,acntId:self.acntId, type: self.incmOrExp)
+            self.reprtViewModel.getDashStat(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter,tag_id:self.tags,account_id:self.acntId)
+        }
+    }
+    func toggleValue<T: Equatable>(in array: inout [T], value: T) {
+        if let index = array.firstIndex(of: value) {
+            array.remove(at: index)
+            print("\(value) was removed. Updated array: \(array)")
+        } else {
+            array.append(value)
+            print("\(value) was added. Updated array: \(array)")
+        }
+    }
+    
+    
+    func tagRemoveButtonPressed(_ title: String, tagView: TagView, sender: TagListView) {
+        print("Tag Remove pressed: \(title), \(sender)")
+        sender.removeTagView(tagView)
     }
     @objc func switchChanged(mySwitch: UISwitch) {
         let value = mySwitch.isOn
@@ -431,6 +676,7 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     }
     @IBAction func clkIncome()
     {
+        self.slctdTagIds = []
         self.incmOrExp = "1"
         self.startAnimating()
         self.incmBtn.backgroundColor = ColorManager.incomeColor()
@@ -443,10 +689,12 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
         DispatchQueue.global().async {
         
         self.reprtViewModel.getReports(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter, tags: self.tags,acntId:self.acntId, type: "1")
+            self.reprtViewModel.getDashStat(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter, tag_id: self.tags,account_id:self.acntId)
         }
     }
     @IBAction func clkExpense()
     {
+        self.slctdTagIds = []
         self.incmOrExp = "2"
         self.startAnimating()
         self.incmBtn.backgroundColor = UIColor.lightGray
@@ -459,12 +707,14 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
         DispatchQueue.global().async {
         
         self.reprtViewModel.getReports(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter, tags: self.tags,acntId:self.acntId, type: "2")
+            self.reprtViewModel.getDashStat(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter, tag_id: self.tags,account_id:self.acntId)
         }
     }
     override func viewDidAppear(_ animated: Bool) {
         //self.crvView.layer.masksToBounds = true
         //self.crvView.layer.cornerRadius = self.crvView.frame.width/2
-        
+        self.crvView.borderWidth = 1
+        self.crvView.borderColor = ColorManager.incomeColor()
         self.crvView.isHidden = false
         self.crvView.dropShadow(color: UIColor(red: 145/255, green: 111/255, blue: 239/255, alpha: 0.5), opacity: 0.5, offSet: CGSize(width: -1, height: 1), radius: 17, scale: true)
         let chart = Circular(percentages: [50,40], colors: [UIColor(red: 145/255, green: 111/255, blue: 239/255, alpha: 1.0),UIColor(red: 255/255, green: 138/255, blue: 138/255, alpha: 1.0)],aimationType: .animationFanAll,showPercentageStyle: .inward)
@@ -476,8 +726,11 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     }
     override func viewWillAppear(_ animated: Bool) {
         
-            
-        
+        self.slctdTagIds = []
+        self.acntIdAry = []
+        self.acntNmeAry = []
+        self.tags = ""
+        self.acntId = ""
         if(self.tags != "")
         {
             self.filterBtn.backgroundColor = ColorManager.incomeColorTblIcn()
@@ -580,7 +833,6 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     {
         
         
-        self.acntDispLbl.text = self.acntName
         self.chooseDate()
 //        let storyboard = UIStoryboard(name: "Main", bundle: nil)
 //        var controller: UIViewController = storyboard.instantiateViewController(withIdentifier: "clndrView") as UIViewController
@@ -596,7 +848,49 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
 //        controller.didMove(toParent: self)
         //self.clndrViewFrm.addSubview(controller.view)
     }
-    
+    @IBAction func thisMonth()
+    {
+        
+        
+        DispatchQueue.global().async {
+            self.reprtViewModel.pagecount = 0
+            let now = Date()
+            let thismonth = Calendar.current.date(byAdding: .month, value: 1, to: now)!
+            let comp: DateComponents = Calendar.current.dateComponents([.year, .month], from: now)
+            let startOfMonth = Calendar.current.date(from: comp)!
+            let dateFormatter2 = DateFormatter()
+            dateFormatter2.dateStyle = .medium
+            dateFormatter2.timeStyle = .none
+            dateFormatter2.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+            self.frmDate = dateFormatter2.string(from: startOfMonth)
+            self.toDate = dateFormatter2.string(from: now)
+            self.reprtViewModel.getReports(fromDate:self.frmDate , toDate:self.toDate ,dateFilter:self.dateFilter, tags: self.tags,acntId:self.acntId, type: self.incmOrExp)
+            self.reprtViewModel.getDashStat(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter,tag_id:self.tags,account_id:self.acntId)
+            
+        }
+        
+    }
+    @IBAction func lastMonth()
+    {
+        DispatchQueue.global().async {
+            self.reprtViewModel.pagecount = 0
+            let now = Date()
+            let comp: DateComponents = Calendar.current.dateComponents([.year, .month], from: now)
+            let startOfMonth = Calendar.current.date(from: comp)!
+            let firstday = Calendar.current.date(byAdding: .month, value: -1, to: startOfMonth)!
+            let lastDay = Calendar.current.date(byAdding: .day, value: -1, to: startOfMonth)!
+            let dateFormatter2 = DateFormatter()
+            dateFormatter2.dateStyle = .medium
+            dateFormatter2.timeStyle = .none
+            dateFormatter2.dateFormat = "yyyy-MM-dd HH:mm:ss Z"
+            self.frmDate = dateFormatter2.string(from: firstday)
+            self.toDate = dateFormatter2.string(from: lastDay)
+            self.reprtViewModel.getReports(fromDate:self.frmDate , toDate:self.toDate ,dateFilter:self.dateFilter, tags: self.tags,acntId:self.acntId, type: self.incmOrExp)
+            self.reprtViewModel.getDashStat(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter,tag_id:self.tags,account_id:self.acntId)
+            
+        }
+        
+    }
     func chooseDate() {
         
     var customConfig = FastisConfig.default
@@ -649,12 +943,12 @@ customConfig.dayCell.onRangeBackgroundColor = UIColor(red: 229/255, green: 220/2
             //return FastisRange(from: now, to: now)
         }
         
-        fastisController.shortcuts = [customShortcut1,customShortcut2,customShortcut3]
+        //fastisController.shortcuts = [customShortcut1,customShortcut2,customShortcut3]
     fastisController.doneHandler = { resultRange in
        // print(resultRange)
         if(resultRange != nil)
         {
-            self.ddlBtn.backgroundColor = ColorManager.incomeColorTblIcn()
+            
             self.dateRangeLbl.textColor = ColorManager.incomeColor()
             let dateFormatter2 = DateFormatter()
             dateFormatter2.dateStyle = .medium
@@ -686,7 +980,7 @@ customConfig.dayCell.onRangeBackgroundColor = UIColor(red: 229/255, green: 220/2
             self.dateFilter = ""
             self.frmDate = ""
             self.toDate = ""
-            self.ddlBtn.backgroundColor = UIColor.clear
+            
             self.dateRangeLbl.textColor = UIColor.gray
             self.dateRangeLbl.text = "Select Date"
            // fastisController.initialValue = nil
@@ -713,7 +1007,6 @@ customConfig.dayCell.onRangeBackgroundColor = UIColor(red: 229/255, green: 220/2
         }
         self.incmBtn.layer.zPosition = 0
         self.expBtn.layer.zPosition = 0
-        self.acntDispLbl.text = self.acntName
         self.tagsView.isHidden = false
         self.filterFrame.isHidden = false
         self.clndrFrame.isHidden = false
@@ -724,6 +1017,21 @@ customConfig.dayCell.onRangeBackgroundColor = UIColor(red: 229/255, green: 220/2
             
         }
         
+    }
+    @IBAction func closeFilterview()
+    {
+//        UIView.animate(withDuration: 0.5, animations: {
+//            // Change the top constraint to bring the view into the visible area
+//            self.CategoryGridView.transform = CGAffineTransform(translationX: 0, y: 0+self.CategoryGridView.frame.height+60)
+//            //self.ctgryVieBtmCnstrt.constant = -350
+//        })
+        self.ctgryVieBtmCnstrt.constant = -610
+        UIView.animate(withDuration: 0.5, animations: {
+                    self.view.layoutIfNeeded()
+                }, completion: { _ in
+                    print("Animation complete")
+                    self.ctgryBgBlckLbl.isHidden = true
+                })
     }
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         if touch.view!.isDescendant(of: self.acntsTblView) == true || touch.view!.isDescendant(of: self.recentsTblView) == true || touch.view!.isDescendant(of: self.tagsClnView) == true || touch.view!.isDescendant(of: self.chartView) == true{
@@ -819,7 +1127,6 @@ customConfig.dayCell.onRangeBackgroundColor = UIColor(red: 229/255, green: 220/2
             
             self.acntId = ""
             self.acntName = "All accounts"
-            self.acntDispLbl.text = self.acntName
             DispatchQueue.global().async {
                 self.reprtViewModel.pagecount = 0
                 
@@ -835,7 +1142,6 @@ customConfig.dayCell.onRangeBackgroundColor = UIColor(red: 229/255, green: 220/2
             let str = ReportViewModel.acntsMdlArry[indexPath.row-1]
             self.acntId = str.account_id!
             self.acntName = str.account_name!
-            self.acntDispLbl.text = self.acntName
             DispatchQueue.global().async {
                 self.reprtViewModel.getReports(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter, tags: self.tags,acntId:self.acntId, type: self.incmOrExp)
                 self.reprtViewModel.getDashStat(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter,tag_id:self.tags,account_id:self.acntId)

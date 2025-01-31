@@ -15,6 +15,7 @@ protocol splashProt
 }
 
 class splashloadViewController: UIViewController,NVActivityIndicatorViewable, splashProt {
+    
     @IBOutlet weak var prpLbl:UILabel!
     @IBOutlet weak var load:NVActivityIndicatorView!
     @IBOutlet weak var logo:UIImageView!
@@ -44,6 +45,7 @@ class splashloadViewController: UIViewController,NVActivityIndicatorViewable, sp
         self.performSegue(withIdentifier: "login", sender: self)
     }
     override func viewDidAppear(_ animated: Bool) {
+        print("test")
         self.logo.fadeIn()
         self.prpLbl.fadeIn()
         //self.prpLbl.layer.cornerRadius = self.prpLbl.frame.size.height/2
