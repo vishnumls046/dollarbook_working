@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>951031094678-5jd7tie2lmt32p200vhjhkpp1jam7ln3.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.951031094678-5jd7tie2lmt32p200vhjhkpp1jam7ln3</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>951031094678-3govmot28o1q8a3g1gtukpep2knu35qv.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyC3bxaFRJ1KbhdKepLujJoRI2W8ZvtgdrA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>951031094678</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.mindbees.dollarbook</string>
+	<key>PROJECT_ID</key>
+	<string>dollarbook-50976</string>
+	<key>STORAGE_BUCKET</key>
+	<string>dollarbook-50976.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:951031094678:ios:341507dbd3b4def31991b7</string>
+</dict>
+</plist>

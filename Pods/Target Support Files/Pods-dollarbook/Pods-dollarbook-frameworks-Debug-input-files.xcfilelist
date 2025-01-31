@@ -1,0 +1,22 @@
+${PODS_ROOT}/Target Support Files/Pods-dollarbook/Pods-dollarbook-frameworks.sh
+${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework
+${BUILT_PRODUCTS_DIR}/CGMath/CGMath.framework
+${BUILT_PRODUCTS_DIR}/Fastis/Fastis.framework
+${BUILT_PRODUCTS_DIR}/FloatingTabBarController/FloatingTabBarController.framework
+${BUILT_PRODUCTS_DIR}/GLWalkthrough/GLWalkthrough.framework
+${BUILT_PRODUCTS_DIR}/IQKeyboardManagerSwift/IQKeyboardManagerSwift.framework
+${BUILT_PRODUCTS_DIR}/JTAppleCalendar/JTAppleCalendar.framework
+${BUILT_PRODUCTS_DIR}/Kingfisher/Kingfisher.framework
+${BUILT_PRODUCTS_DIR}/MSBBarChart/MSBBarChart.framework
+${BUILT_PRODUCTS_DIR}/NVActivityIndicatorView/NVActivityIndicatorView.framework
+${BUILT_PRODUCTS_DIR}/PieCharts/PieCharts.framework
+${BUILT_PRODUCTS_DIR}/PrettyCards/PrettyCards.framework
+${BUILT_PRODUCTS_DIR}/RandomColorSwift/RandomColorSwift.framework
+${BUILT_PRODUCTS_DIR}/SOTabBar/SOTabBar.framework
+${BUILT_PRODUCTS_DIR}/Spring/Spring.framework
+${BUILT_PRODUCTS_DIR}/SwiftValidators/SwiftValidators.framework
+${BUILT_PRODUCTS_DIR}/TaggerKit/TaggerKit.framework
+${BUILT_PRODUCTS_DIR}/TagsList/TagsList.framework
+${BUILT_PRODUCTS_DIR}/Toaster/Toaster.framework
+${BUILT_PRODUCTS_DIR}/TransitionButton/TransitionButton.framework
+${PODS_XCFRAMEWORKS_BUILD_DIR}/OneSignalXCFramework/OneSignal.framework/OneSignal
