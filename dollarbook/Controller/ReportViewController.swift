@@ -255,14 +255,14 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     @IBOutlet weak var grphlLoadView,CategoryGridView:UIView!
     @IBOutlet weak var crvView:UIView!
     @IBOutlet weak var noTrnscnLbl:UILabel!
-    @IBOutlet weak var totBalance:UILabel!
+    @IBOutlet weak var totBalance,showingMnthLbl:UILabel!
     @IBOutlet weak var totIncLbl,incmExpnLgndLbl:UILabel!
     @IBOutlet weak var totExpLbl,ctgryBgBlckLbl:UILabel!
     @IBOutlet weak var dateRangeLbl:UILabel!
     @IBOutlet weak var incmCntnrLine:UILabel!
     @IBOutlet weak var expCntnrLine:UILabel!
     @IBOutlet weak var incmBtn:UIButton!
-    @IBOutlet weak var expBtn:UIButton!
+    @IBOutlet weak var expBtn,thismnthBtn,lastmnthBtn,rangeBtn:UIButton!
     @IBOutlet weak var slctdTagLbl:UILabel!
     @IBOutlet weak var chartView: PieChart!
     @IBOutlet weak var tagsList: TagListView!
@@ -280,6 +280,7 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     var acntNmeAry:[String] = []
     var tagfull = false
     var i = 0
+    var dateBtnSelStylVal = 0
     var tags = ""
     var dateFilter = ""
     var frmDate = ""
@@ -413,7 +414,44 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     }
     @IBAction func clickFilterView()
     {
-        
+        switch self.dateBtnSelStylVal
+        {
+        case 0:
+            self.thismnthBtn.backgroundColor = UIColor.white
+            self.thismnthBtn.setTitleColor(UIColor.black, for: .normal)
+            self.lastmnthBtn.backgroundColor = UIColor.white
+            self.lastmnthBtn.setTitleColor(UIColor.black, for: .normal)
+            self.rangeBtn.backgroundColor = UIColor.white
+            self.rangeBtn.setTitleColor(UIColor.black, for: .normal)
+        case 1:
+            self.thismnthBtn.backgroundColor = UIColor.black
+            self.thismnthBtn.setTitleColor(UIColor.white, for: .normal)
+            self.lastmnthBtn.backgroundColor = UIColor.white
+            self.lastmnthBtn.setTitleColor(UIColor.black, for: .normal)
+            self.rangeBtn.backgroundColor = UIColor.white
+            self.rangeBtn.setTitleColor(UIColor.black, for: .normal)
+        case 2:
+            self.lastmnthBtn.backgroundColor = UIColor.black
+            self.lastmnthBtn.setTitleColor(UIColor.white, for: .normal)
+            self.thismnthBtn.backgroundColor = UIColor.white
+            self.thismnthBtn.setTitleColor(UIColor.black, for: .normal)
+            self.rangeBtn.backgroundColor = UIColor.white
+            self.rangeBtn.setTitleColor(UIColor.black, for: .normal)
+        case 3:
+            self.rangeBtn.backgroundColor = UIColor.black
+            self.rangeBtn.setTitleColor(UIColor.white, for: .normal)
+            self.thismnthBtn.backgroundColor = UIColor.white
+            self.thismnthBtn.setTitleColor(UIColor.black, for: .normal)
+            self.lastmnthBtn.backgroundColor = UIColor.white
+            self.lastmnthBtn.setTitleColor(UIColor.black, for: .normal)
+        default:
+            self.thismnthBtn.backgroundColor = UIColor.white
+            self.thismnthBtn.setTitleColor(UIColor.black, for: .normal)
+            self.lastmnthBtn.backgroundColor = UIColor.white
+            self.lastmnthBtn.setTitleColor(UIColor.black, for: .normal)
+            self.rangeBtn.backgroundColor = UIColor.white
+            self.rangeBtn.setTitleColor(UIColor.black, for: .normal)
+        }
         self.tagsList.textFont = .systemFont(ofSize: 14)
         self.acntsList.textFont = .systemFont(ofSize: 14)
         
@@ -725,7 +763,7 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
 //        self.grphlLoadView.addSubview(chart)
     }
     override func viewWillAppear(_ animated: Bool) {
-        
+        self.dateBtnSelStylVal = 0
         self.slctdTagIds = []
         self.acntIdAry = []
         self.acntNmeAry = []
@@ -743,6 +781,7 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
         self.filterFrame.isHidden = true
         self.acntView.isHidden = true
         self.startAnimating()
+        self.showingMnthLbl.text = "Showing this month's"
         self.dateFilter = "daterange"
         if(self.incmOrExp == "1")
         {
@@ -848,10 +887,27 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
 //        controller.didMove(toParent: self)
         //self.clndrViewFrm.addSubview(controller.view)
     }
+    func btnSlcnStyle(_ button:UIButton)
+    {
+        button.backgroundColor = UIColor.black
+        button.setTitleColor(UIColor.white, for: .normal)
+    }
+    func btnDeSlcnStyle(sender:UIButton)
+    {
+        sender.backgroundColor = UIColor.white
+        sender.setTitleColor(UIColor.black, for: .normal)
+    }
     @IBAction func thisMonth()
     {
-        
-        
+        self.showingMnthLbl.text = "Showing this month's"
+        self.dateBtnSelStylVal = 1
+        self.thismnthBtn.backgroundColor = UIColor.black
+        self.thismnthBtn.setTitleColor(UIColor.white, for: .normal)
+        self.lastmnthBtn.backgroundColor = UIColor.white
+        self.lastmnthBtn.setTitleColor(UIColor.black, for: .normal)
+        self.rangeBtn.backgroundColor = UIColor.white
+        self.rangeBtn.setTitleColor(UIColor.black, for: .normal)
+       // self.btnSlcnStyle(self.thismnthBtn)
         DispatchQueue.global().async {
             self.reprtViewModel.pagecount = 0
             let now = Date()
@@ -872,6 +928,14 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
     }
     @IBAction func lastMonth()
     {
+        self.showingMnthLbl.text = "Showing last month's"
+        self.dateBtnSelStylVal = 2
+        self.lastmnthBtn.backgroundColor = UIColor.black
+        self.lastmnthBtn.setTitleColor(UIColor.white, for: .normal)
+        self.thismnthBtn.backgroundColor = UIColor.white
+        self.thismnthBtn.setTitleColor(UIColor.black, for: .normal)
+        self.rangeBtn.backgroundColor = UIColor.white
+        self.rangeBtn.setTitleColor(UIColor.black, for: .normal)
         DispatchQueue.global().async {
             self.reprtViewModel.pagecount = 0
             let now = Date()
@@ -892,7 +956,13 @@ class ReportViewController: UIViewController,UITableViewDelegate,UITableViewData
         
     }
     func chooseDate() {
-        
+        self.dateBtnSelStylVal = 3
+        self.rangeBtn.backgroundColor = UIColor.black
+        self.rangeBtn.setTitleColor(UIColor.white, for: .normal)
+        self.thismnthBtn.backgroundColor = UIColor.white
+        self.thismnthBtn.setTitleColor(UIColor.black, for: .normal)
+        self.lastmnthBtn.backgroundColor = UIColor.white
+        self.lastmnthBtn.setTitleColor(UIColor.black, for: .normal)
     var customConfig = FastisConfig.default
 customConfig.dayCell.dateLabelColor = UIColor(red: 141/255, green: 118/255, blue: 206/255, alpha: 1.0)
 customConfig.controller.barButtonItemsColor = UIColor(red: 145/255, green: 111/255, blue: 239/255, alpha: 1.0)
@@ -973,7 +1043,11 @@ customConfig.dayCell.onRangeBackgroundColor = UIColor(red: 229/255, green: 220/2
                 self.reprtViewModel.getDashStat(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter,tag_id:self.tags,account_id:self.acntId)
 //                self.reprtViewModel.getTransactions(fromDate: self.frmDate, toDate: self.toDate,dateFilter:self.dateFilter, tags: self.tags,acntId:self.acntId, pageCnt: 0)
             }
-            
+            let dateFormatter3 = DateFormatter()
+            dateFormatter3.dateStyle = .medium
+            dateFormatter3.timeStyle = .none
+            dateFormatter3.dateFormat = "d MMM yy"
+            self.showingMnthLbl.text = "Showing \(dateFormatter3.string(from: resultRange!.fromDate)) - \(dateFormatter3.string(from: resultRange!.toDate))"
         }
         else
         {

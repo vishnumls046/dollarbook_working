@@ -30,8 +30,8 @@ class AcntManageViewController: UIViewController,acntMngeProt,NVActivityIndicato
     @IBOutlet weak var acntIdTxt:UITextField!
     @IBOutlet weak var addEditLbl:UILabel!
     @IBOutlet weak var noAcnts:UILabel!
-    @IBOutlet weak var creditChkBxImg:UIImageView!
-    @IBOutlet weak var creditChkBxBtn:UIButton!
+    @IBOutlet weak var creditChkBxImg,filterImg:UIImageView!
+    @IBOutlet weak var creditChkBxBtn,filterBtn:UIButton!
     @IBOutlet weak var acntTypBgLabel:UILabel!
     @IBOutlet weak var addAcntBgLabel:UILabel!
     @IBOutlet weak var credCrdPromtLbl:UILabel!
@@ -138,6 +138,8 @@ class AcntManageViewController: UIViewController,acntMngeProt,NVActivityIndicato
         {
             self.acntTbl.isHidden = false
             self.noAcnts.isHidden = true
+//            self.filterBtn.isHidden = false
+//            self.filterImg.isHidden = false
             self.acntTbl.reloadData()
             self.closeAcntTypView()
         }
@@ -145,6 +147,8 @@ class AcntManageViewController: UIViewController,acntMngeProt,NVActivityIndicato
         {
             self.acntTbl.isHidden = true
             self.noAcnts.isHidden = false
+//            self.filterBtn.isHidden = true
+//            self.filterImg.isHidden = true
             self.closeAcntTypView()
         }
     }

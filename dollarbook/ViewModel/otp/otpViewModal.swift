@@ -31,7 +31,7 @@ class otpViewModal:NSObject
         else
         {
             DispatchQueue.global().async {
-                AF.request(APImanager.sendOtp(), method: .post, parameters: ["email_id": email,"full_name":"","device_type":"iOS","device_name":"", "player_id":""] , encoding: URLEncoding.default, headers:["Oakey":"INCEXPMND1254"]).responseJSON
+                AF.request(APImanager.sendOtp(), method: .post, parameters: ["email_id": email] , encoding: URLEncoding.default, headers:["Oakey":"INCEXPMND1254"]).responseJSON
                 {
                     response in
                     if let data = response.data
@@ -87,7 +87,7 @@ class otpViewModal:NSObject
         {
              plyrId = ""
         }
-        AF.request(APImanager.verifyOtp(), method: .post, parameters: ["email_id": email,"otp":otp] , encoding: URLEncoding.default, headers:["Oakey":"INCEXPMND1254"]).responseJSON
+        AF.request(APImanager.verifyOtp(), method: .post, parameters: ["email_id": email,"otp":otp,"device_type":"iOS","device_name":modelCode!, "player_id":plyrId] , encoding: URLEncoding.default, headers:["Oakey":"INCEXPMND1254"]).responseJSON
         {
             response in
             if let data = response.data

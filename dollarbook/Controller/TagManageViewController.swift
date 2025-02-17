@@ -9,6 +9,7 @@ import UIKit
 import NVActivityIndicatorView
 import RandomColorSwift
 import Kingfisher
+import SwiftEntryKit
 protocol tagmanageProt
 {
     func loadIconsCln()
@@ -32,8 +33,9 @@ class TagManageViewController: UIViewController,tagmanageProt,NVActivityIndicato
     @IBOutlet weak var noTags:UILabel!
     @IBOutlet weak var AddEditTagSwitch: UISwitch!
     @IBOutlet weak var ctgryIcon: UIImageView!
-    @IBOutlet weak var doneBg: UIImageView!
+    @IBOutlet weak var doneBg,plusImg: UIImageView!
     @IBOutlet weak var ctgryIconBgLbl: UILabel!
+    @IBOutlet weak var plusImgCnstrt:NSLayoutConstraint!
     var tagmanageViewMdl = tagmanageViewModel()
     
     var iconUrl = ""
@@ -122,7 +124,7 @@ class TagManageViewController: UIViewController,tagmanageProt,NVActivityIndicato
     override func viewDidLoad() {
         super.viewDidLoad()
         self.refreshColor()
-        self.AddTagBtn.isHidden = true
+        //self.AddTagBtn.isHidden = true
         self.EditTagBtn.isHidden = true
         self.doneBg.isHidden = true
         let longPressedGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(gestureRecognizer:)))
@@ -158,6 +160,9 @@ class TagManageViewController: UIViewController,tagmanageProt,NVActivityIndicato
     }
     override func viewWillAppear(_ animated: Bool) {
         self.noTags.isHidden = true
+        self.AddTagBtn.isHidden = true
+        self.EditTagBtn.isHidden = true
+        self.plusImgCnstrt.constant = 40
         self.startAnimating()
         DispatchQueue.global().async {
             self.tagmanageViewMdl.getTags(tags:self.switchVal)
@@ -205,11 +210,51 @@ class TagManageViewController: UIViewController,tagmanageProt,NVActivityIndicato
         
     }
     func valdteTag(alrtStr:String) {
-        let alert = UIAlertController(title: "Dollar Book", message: alrtStr, preferredStyle: UIAlertController.Style.alert)
-                // add an action (button)
-                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-                // show the alert
-                self.present(alert, animated: true, completion: nil)
+//        let alert = UIAlertController(title: "Dollar Book", message: alrtStr, preferredStyle: UIAlertController.Style.alert)
+//                // add an action (button)
+//                alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+//                // show the alert
+//                self.present(alert, animated: true, completion: nil)
+        // Generate top floating entry and set some properties
+        var attributes = EKAttributes.topToast
+        //attributes.entryBackground = .color(color: EKColor(ColorManager.incomeColor()))
+        attributes.entryBackground = .gradient(
+            gradient: .init(
+                colors: [EKColor(UIColor(red: 195/255, green: 182/255, blue: 253/255, alpha: 1.0)), EKColor(UIColor(red: 131/255, green: 108/255, blue: 244/255, alpha: 1.0))],
+                startPoint: .zero,
+                endPoint: CGPoint(x: 1, y: 1)
+            )
+        )
+        attributes.popBehavior = .animated(animation: .init(translate: .init(duration: 0.3), scale: .init(from: 1, to: 0.7, duration: 0.7)))
+        attributes.shadow = .active(with: .init(color: .black, opacity: 0.5, radius: 10, offset: .zero))
+        attributes.statusBar = .dark
+        attributes.scroll = .enabled(swipeable: true, pullbackAnimation: .jolt)
+        //attributes.positionConstraints.maxSize = .init(width: .constant(value: UIScreen.main.minEdge), height: .intrinsic)
+
+        let title = EKProperty.LabelContent(
+            text: "Dollarbook",
+            style: .init(
+                font: .systemFont(ofSize: 14, weight: .bold),
+                color: EKColor(UIColor.white),
+                alignment: .left,
+                displayMode: .light
+            )
+        )
+        let Description = EKProperty.LabelContent(
+            text: alrtStr,
+            style: .init(
+                font: .systemFont(ofSize: 12, weight: .light),
+                color: EKColor(UIColor.white),
+                alignment: .left,
+                displayMode: .light
+            )
+        )
+        let image = EKProperty.ImageContent(image: UIImage(named: "logo3.png")!, size: CGSize(width: 44, height: 30))
+        let simpleMessage = EKSimpleMessage(image: image, title: title, description: Description)
+        let notificationMessage = EKNotificationMessage(simpleMessage: simpleMessage)
+
+        let contentView = EKNotificationMessageView(with: notificationMessage)
+        SwiftEntryKit.display(entry: contentView, using: attributes)
     }
     func loadTagsCln() {
         self.stopAnimating()
@@ -244,6 +289,15 @@ class TagManageViewController: UIViewController,tagmanageProt,NVActivityIndicato
     }
     @IBAction func clkAddBtn()
     {
+        self.iconUrl = "https://dollarbook.app/resources/icons/Default.png"
+        if let url = URL(string: self.iconUrl) {
+            let processor = OverlayImageProcessor(overlay: ColorManager.expenseColor(), fraction: 0.1)
+            
+            // Load the image with Kingfisher and apply the tint
+            //                           self.ctgryIcon.kf.setImage(
+            //                                       with: url)
+            self.ctgryIcon.kf.setImage(with: url, options: [.processor(processor)])
+        }
         if(self.switchVal == "income")
         {
             self.AddEditTagSwitch.isOn = false
@@ -254,24 +308,31 @@ class TagManageViewController: UIViewController,tagmanageProt,NVActivityIndicato
         }
         self.addEditLbl.text = "Add Tag"
         self.tagNmeTxt.text = ""
-        self.AddTagBtn.isHidden = false
+        //self.AddTagBtn.isHidden = false
         self.EditTagBtn.isHidden = true
         if(self.addTagView.isHidden == true)
         {
            // self.addBtn.setBackgroundImage(UIImage(named: "minus"), for: .normal)
+            
+            
+            self.plusImg.isHidden = true
+            self.AddTagBtn.isHidden = false
             self.addTagView.isHidden = false
-            self.AddTagBtn.isHidden = true
+            
             self.EditTagBtn.isHidden = true
-            self.doneBg.isHidden = true
+            self.doneBg.isHidden = false
+            self.tagNmeTxt.becomeFirstResponder()
             
         }
         else
         {
            // self.addBtn.setBackgroundImage(UIImage(named: "plus"), for: .normal)
+            self.plusImg.isHidden = false
+            self.addBtn.isHidden = false
+            self.AddTagBtn.isHidden = true
             self.addTagView.isHidden = true
-            self.AddTagBtn.isHidden = false
-            self.EditTagBtn.isHidden = false
-            self.doneBg.isHidden = false
+            self.EditTagBtn.isHidden = true
+            self.doneBg.isHidden = true
         }
     }
     func editTag(tagNme:String,tagType:String,tagId:String,tagIcnClr:String,tagIcnUrl:String,tagIcnId:String)
@@ -302,9 +363,12 @@ class TagManageViewController: UIViewController,tagmanageProt,NVActivityIndicato
         {
             self.AddEditTagSwitch.isOn = true
         }
+        self.plusImg.isHidden = true
+        self.addBtn.isHidden = true
         self.tagIdTxt.text = tagId
         self.AddTagBtn.isHidden = true
         self.EditTagBtn.isHidden = false
+        self.doneBg.isHidden = false
         self.tagmanageViewMdl.getIcons()
         //self.submitBtn.tag = Int(acntId)!
         self.EditTagBtn.addTarget(self, action: #selector(editSbmt), for: .touchUpInside)
@@ -321,6 +385,11 @@ class TagManageViewController: UIViewController,tagmanageProt,NVActivityIndicato
         }
         else
         {
+            self.AddTagBtn.isHidden = true
+            self.EditTagBtn.isHidden = true
+            self.doneBg.isHidden = true
+            self.plusImg.isHidden = false
+            self.addBtn.isHidden = false
             self.addTagView.isHidden = true
           //  self.addBtn.setBackgroundImage(UIImage(named: "plus"), for: .normal)
         }

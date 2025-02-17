@@ -26,7 +26,7 @@ class otpViewController: UIViewController,otpViewProt, KWVerificationCodeViewDel
     func didChangeVerificationCode() {
       if(self.verificationCodeView.hasValidCode())
         {
-         print("test")
+        
           self.startAnimating()
           self.view.endEditing(true)
           let email =  self.emailTxt.text!
@@ -39,7 +39,7 @@ class otpViewController: UIViewController,otpViewProt, KWVerificationCodeViewDel
     }
     func otpVerifyRedirect()
     {
-        self.performSegue(withIdentifier: "otpRedirect", sender: self)
+       self.performSegue(withIdentifier: "otpRedirect", sender: self)
     }
     func showAlert(msg:String)
     {

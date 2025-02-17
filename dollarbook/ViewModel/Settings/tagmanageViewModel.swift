@@ -155,7 +155,7 @@ class tagmanageViewModel:NSObject
     {
         if (tagName == "")
         {
-            self.tagmangDlt?.valdteTag(alrtStr: "Please Enter Account Name !")
+            self.tagmangDlt?.valdteTag(alrtStr: "Please Enter Tag Name !")
         }
         else
         {
@@ -170,7 +170,7 @@ class tagmanageViewModel:NSObject
     {
         if (tagName == "")
         {
-            self.tagmangDlt?.valdteTag(alrtStr: "Please Enter Account Name !")
+            self.tagmangDlt?.valdteTag(alrtStr: "Please Enter Tag Name !")
         }
         else
         {
